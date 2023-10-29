@@ -100,7 +100,7 @@ This lab demonstrates how to install and configure Active Directory using Micros
 <p>
   <ul>
     <li>When logging back in to the domain controller VM, it is important to log in with the <b>context of the domain</b>.</li>
-    <li>Type out the domain path and then the name of the user. Example: <b>mydomain.com/labuser</b></li>
+    <li>Type out the domain path and then the name of the user. Example: <b>mydomain.com\labuser</b></li>
     <br>
     <img width="450" alt="remote desktop - mydomain com labuser" src="https://github.com/landonbmartin/configure-ad/assets/148168629/b545ed50-1284-46fb-bf97-9280cab529ac">
     </br>
@@ -129,6 +129,9 @@ This lab demonstrates how to install and configure Active Directory using Micros
     <img width="450" alt="members of - jane doe admin" src="https://github.com/landonbmartin/configure-ad/assets/148168629/2a485d4e-07fb-48a0-8a35-9ffacb6c38da">
     </br>
     <li>The user Jane will now be used to log in from here on, using the login username: <b>jane_admin</b></li>
+    <br>
+    <img width="450" alt="jane_admin who am i" src="https://github.com/landonbmartin/configure-ad/assets/148168629/5955a16e-5c12-4f31-99f6-7438884b4377">
+    </br>
   </ul>
 </p>
 
@@ -138,6 +141,61 @@ This lab demonstrates how to install and configure Active Directory using Micros
 
 <p>
   <ul>
-    <li></li>
+    <li>First, configure the Domain Name System (DNS) server. Go to the Domain Controller VM in the Microsoft Azure Portal and go to <b>Networking</b>. Then, go to the link listed next to <b>Network Interface</b>. Head to <b>DNS Servers</b> under <b>settings</b>, and set the DNS Server to <b>Custom</b>. Then, enter the domain controller's private IP address and save the changes. Restart the client VM in order to ensure the DNS changes are saved and to flush DNS cache.</li>
+    <br>
+    <img width="700" alt="Change client 1 DNS" src="https://github.com/landonbmartin/configure-ad/assets/148168629/27b6ec7a-f3f5-44fa-8258-2fbe6d8dad1c">
+    </br>
+    <li>In the System menu of the Client VM, click on <b>Rename this PC (Advanced)</b> and Change.</li>
+    <li>Enter the domain and necessary credentials in order to let the client join the domain (logging in as <b>jane_admin</b>). It is important to note that the login credentials have to be input within the context of the domain path (mydomain.com\jane_admin)</li>
+    <br>
+    <img width="800" alt="Connecting jane_admin to DC" src="https://github.com/landonbmartin/configure-ad/assets/148168629/783271d4-949e-4e80-8f3d-02bedbd826e7">
+    </br>
+    <li>The Client VM now will be part of the domain. A popup should appear welcoming you to the domain.
   </ul>
 </p>
+
+<br />
+
+<h3>Setup Remote Desktop for non-administrative users on Client VM</h3>
+
+<p>
+  <ul>
+    <li>Before users in the domain can use the client computer, Remote Desktop has to be enabled for non-administrative users</li>
+    <li>While logged in as the administrator (jane_admin), open <b>System Properties</b>. Click on <b>Remote Desktop</b> and select users that can remotely access this PC</li>
+    <li>Add <b>Domain Users</b> access to Remote Desktop. Non-administrative users can now log in to the Client</li>
+    <br>
+    <img width="400" alt="Add domain users" src="https://github.com/landonbmartin/configure-ad/assets/148168629/aef0ced4-a14c-41da-a250-4e0557433dbf">
+    </br>
+  </ul>
+</p>
+
+<br />
+
+<h3>Creating Users and attempt to log into the Client VM with one of the users</h3>
+
+<p>
+  <ul>
+    <li>In the Domain Controller VM logged in as (jane_admin), open <b>Powershell ISE</b> <i>as an administrator</i></li>
+    <li>Using this <a href = "https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1">powershell script</a>, we will create thousands of randomly generated accounts all with the password, <i>Password1</i></li>
+    <li>In Powershell ISE, create a new file and copy-and-paste the powershell script into the file and run the script</li>
+    <br>
+    <img width="800" alt="Create Users" src="https://github.com/landonbmartin/configure-ad/assets/148168629/d097869e-deb8-40ad-8228-6161134a987f">
+    </br>
+    <li>All of these generated users will be put into the <b>_EMPLOYEES</b> Organizational Unit in the Active Directory</li>
+    <br>
+    <img width="600" alt="Create Users _employees" src="https://github.com/landonbmartin/configure-ad/assets/148168629/83448007-8d68-41a8-b0ba-f1af124b356b">
+    </br>
+    <li>Go to the Active Directory Users and Computers console and select a random username and obtain the login information by going to <b>Properties</b> and in the <b>Account</b> tab
+    <ul>
+      <li>The username will appear as <b>[first name].[last name]</b>, in this image the user is selecting "XXXXX.XXXXX"
+    </ul>
+    <br>
+    <img width="600" alt="User Bew Fed" src="https://github.com/landonbmartin/configure-ad/assets/148168629/cfe9a7f3-e0c3-4bd0-b448-d1ef23b3878b">
+    </br>
+    <li>Attempt to log in to the Client VM using the generated username you have selected. The username to log in will look like <b>mydomain.com\username</b> and the password will be <b>Password1</b>
+  </ul>
+</p>
+
+<br />
+
+<h3 align = "right">Next Tutorial - <a href="https://github.com/landonbmartin/DNS">Understanding & Building Intuition for DNS</a></h3>
